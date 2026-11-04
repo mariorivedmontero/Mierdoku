@@ -1,2 +1,2 @@
 # Mierdoku 💩
-Sudoku de asesinatos. Juega en https://mariorivedmontero.github.io/mierdoku/
+Sudoku de asesinatos. Juega en https://mariorivedmontero.github.io/Mierdoku/
