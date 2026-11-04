@@ -276,7 +276,6 @@ function render(){
   <p class="hintline" id="hl">${selP===null?'Toca a un sospechoso y luego una casilla para colocarlo. Toca a alguien del plano para quitarlo.':'Colocando a <b>'+P[selP].name+'</b>: toca una casilla.'}</p>
   <div class="chips">${chips}</div>
   <div class="board" id="plan"></div>
-  ${legendHTML(L)}
   <div class="boardTitle"><h2>Apuntes</h2><button class="btn ghost undo" style="padding:4px 8px" onclick="undo()">↶ Deshacer</button></div>
   <p class="hintline" style="margin-top:4px">Pequeña: varias candidatas por casilla. Grande: va ahí seguro.</p>
   ${modes}
@@ -284,7 +283,9 @@ function render(){
   <div class="board notes" id="notes"></div>
   <div class="answer"><div class="ansbox"><label>El asesino es...</label><select id="guess" onchange="setGuess(this.value)">${opts}</select></div></div>
   <div class="row"><button class="btn primary" onclick="check()">🔎 Comprobar</button><button class="btn" onclick="hint()">💡 Pista <span class="wl">(${hintsLeft()})</span></button><button class="btn" onclick="reveal()">Ver solución (5💡)</button></div>
-  <p class="hintline" style="margin-top:8px">Te quedan <b class="wl2">${hintsLeft()}</b> pistas 💡. Ganas 1 cada 2 casos resueltos.</p>`;
+  <p class="hintline" style="margin-top:8px">Te quedan <b class="wl2">${hintsLeft()}</b> pistas 💡. Ganas 1 cada 2 casos resueltos.</p>
+  <div class="boardTitle"><h2>Leyenda</h2></div>
+  ${legendHTML(L)}`;
   drawPlan(); drawNotes(); startTimer();
 }
 
