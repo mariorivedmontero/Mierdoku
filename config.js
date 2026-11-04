@@ -1,0 +1,1 @@
+window.FIREBASE_CONFIG={apiKey:"AIzaSyD8SOOPA9voKSPs2lZpDwcJ9obg5-Md8Vc",authDomain:"mierdoku-rived.firebaseapp.com",projectId:"mierdoku-rived",storageBucket:"mierdoku-rived.firebasestorage.app",messagingSenderId:"724805166892",appId:"1:724805166892:web:285561fe1c979480e02e89"};
