@@ -102,6 +102,35 @@ p.intro{text-align:center;font-size:14px;color:var(--muted);margin:0 0 12px;font
 .cell.block::before{content:'';position:absolute;inset:0;background:rgba(60,40,20,.10)}
 .table{width:78%;height:78%;background:linear-gradient(#d7a85a,#b8873f);border:2px solid #6e4e22;border-radius:3px}
 .rug{position:absolute;inset:12%;border-radius:4px;background:repeating-linear-gradient(45deg,#c96f6f 0 4px,#d98a8a 4px 8px);opacity:.55}
+.lvl{display:block}
+@media (orientation: landscape) and (min-width: 640px){
+ .wrap{max-width:none;padding:6px 12px 30px}
+ .nav{margin-bottom:0}
+ h1.case{font-size:18px;margin:0}
+ p.intro{margin:0 0 6px;font-size:12.5px}
+ .lvl{display:grid;grid-template-columns:minmax(190px,1fr) auto auto;grid-template-areas:"info plan notes" "act plan notes" "leg plan notes";grid-template-rows:auto auto 1fr;column-gap:12px;align-items:start}
+ .sInfo{grid-area:info}.sAct{grid-area:act}.sLeg{grid-area:leg}
+ .cards{grid-template-columns:1fr;gap:6px}
+ .photo{width:52px}.photo .face{height:40px;font-size:26px}.photo .x{height:40px}.photo .nm{font-size:15px}
+ .bubble{font-size:12.5px}
+ .sPlan,.sNotes{grid-area:plan;position:sticky;top:4px;display:grid;grid-template-columns:auto auto;grid-template-areas:"t t" "c b";column-gap:6px;align-items:start;max-width:none!important}
+ .sNotes{grid-area:notes;grid-template-areas:"t t" "m b" "c b";grid-template-rows:auto auto 1fr}
+ .sPlan .boardTitle,.sNotes .boardTitle{grid-area:t;margin:0 0 4px}
+ .boardTitle h2{font-size:13px}
+ .boardTitle .btn{font-size:12px}
+ .sPlan .hintline,.sNotes .hintline{display:none}
+ .sPlan .chips{grid-area:c;flex-direction:column;flex-wrap:nowrap;margin:0;gap:4px}
+ .sPlan .chip{padding:0 6px 0 1px;font-size:11px;border-width:1.5px;gap:3px}.sPlan .chip .em{width:19px;height:19px;font-size:12px}
+ .sPlan .chips{gap:3px}
+ #plan,#notes{grid-area:b}
+ .sNotes .modes{grid-area:m;flex-direction:column;margin:0 0 4px;width:auto}
+ .modes button{padding:5px 8px}.modes button+button{border-left:0;border-top:2px solid var(--ink)}
+ .mtx{display:none}
+ .sNotes .tools{grid-area:c;display:grid;grid-template-columns:repeat(3,26px);gap:3px;margin:0;align-content:start}
+ .sNotes .tool{min-width:26px;width:26px;height:26px;font-size:16px;padding:0;border-width:1.5px;border-radius:7px}
+ .sNotes .tool.small{width:auto;grid-column:span 3;font-size:10.5px;height:22px}
+ .sNotes .modes{flex-direction:row}.sNotes .modes button{padding:4px 9px}.sNotes .modes button+button{border-top:0;border-left:2px solid var(--ink)}
+}
 .svob{width:78%;height:78%;display:block}
 .legend{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:8px 10px;margin-top:10px}
 .lgh{font-size:13px;font-weight:700;margin:4px 0}
@@ -265,27 +294,32 @@ function render(){
   const chips=P.map((p,i)=>`<button class="chip ${selP===i?'on':''} ${S.place[i]?'placed':''}" data-i="${i}" onclick="pick(${i})"><span class="em" style="background:${p.bg}">${p.av}</span>${p.name[0]}</button>`).join('');
   const toolsL=['x','o'].concat(P.map(p=>p.name[0]));
   const tools=toolsL.map(t=>`<button class="tool ${tool===t?'on':''}" data-t="${t}" onclick="setTool('${t}')">${t==='x'?'✕':t==='o'?'●':t}</button>`).join('')+`<button class="tool small ${tool==='e'?'on':''}" data-t="e" onclick="setTool('e')">Goma</button><button class="tool small" onclick="clearNotes()">Borrar todo</button>`;
-  const modes=`<div class="modes"><button data-m="s" class="${nmode==='s'?'on':''}" onclick="setMode('s')">✏️ Letra pequeña</button><button data-m="b" class="${nmode==='b'?'on':''}" onclick="setMode('b')">🖊️ Letra grande</button></div>`;
+  const modes=`<div class="modes"><button data-m="s" class="${nmode==='s'?'on':''}" onclick="setMode('s')">✏️<span class="mtx"> Letra pequeña</span></button><button data-m="b" class="${nmode==='b'?'on':''}" onclick="setMode('b')">🖊️<span class="mtx"> Letra grande</span></button></div>`;
   const opts=`<option value="">— elige —</option>`+P.filter(p=>!p.victim).map((p,i)=>`<option value="${i}" ${S.guess==i?'selected':''}>${p.name}</option>`).join('');
   app.innerHTML=`${nav}
   <h1 class="case">${L.daily?'📅 Caso del día':L.n+'. '+L.title}</h1>${L.daily?`<p class="intro" style="margin-bottom:2px"><b>${L.title}</b> · ${fmtDay(L.day)}</p>`:''}<p class="intro">${L.intro}</p>
+  <div class="lvl"><div class="sInfo">
   <div class="cards">${cards}</div>
   ${gens?`<div class="generals">${gens}</div>`:''}
   ${L.n===1?`<div class="note">Coloca a cada sospechoso según su pista. Recuerda: una persona por fila y por columna. — El inspector</div>`:''}
+  </div><div class="sPlan">
   <div class="boardTitle"><h2>Escena del crimen</h2><div><button class="btn ghost undo" style="padding:4px 8px" onclick="undo()">↶ Deshacer</button><button class="btn ghost" style="padding:4px" onclick="clearPlace()">↺ Vaciar</button></div></div>
   <p class="hintline" id="hl">${selP===null?'Toca a un sospechoso y luego una casilla para colocarlo. Toca a alguien del plano para quitarlo.':'Colocando a <b>'+P[selP].name+'</b>: toca una casilla.'}</p>
   <div class="chips">${chips}</div>
   <div class="board" id="plan"></div>
+  </div><div class="sNotes">
   <div class="boardTitle"><h2>Apuntes</h2><button class="btn ghost undo" style="padding:4px 8px" onclick="undo()">↶ Deshacer</button></div>
   <p class="hintline" style="margin-top:4px">Pequeña: varias candidatas por casilla. Grande: va ahí seguro.</p>
   ${modes}
   <div class="tools">${tools}</div>
   <div class="board notes" id="notes"></div>
+  </div><div class="sAct">
   <div class="answer"><div class="ansbox"><label>El asesino es...</label><select id="guess" onchange="setGuess(this.value)">${opts}</select></div></div>
   <div class="row"><button class="btn primary" onclick="check()">🔎 Comprobar</button><button class="btn" onclick="hint()">💡 Pista <span class="wl">(${hintsLeft()})</span></button><button class="btn" onclick="reveal()">Ver solución (5💡)</button></div>
   <p class="hintline" style="margin-top:8px">Te quedan <b class="wl2">${hintsLeft()}</b> pistas 💡. Ganas 1 cada 2 casos resueltos.</p>
+  </div><div class="sLeg">
   <div class="boardTitle"><h2>Leyenda</h2></div>
-  ${legendHTML(L)}`;
+  ${legendHTML(L)}</div></div>`;
   drawPlan(); drawNotes(); startTimer();
 }
 
@@ -314,9 +348,12 @@ function cellBase(L,el,r,c,notes){
     el.style.borderRightColor=w.r===3?'var(--nwall)':'var(--nline)';
   }
 }
+const LAND=window.matchMedia?window.matchMedia('(orientation: landscape) and (min-width: 640px)'):{matches:false};
 function sizeBoard(b,N){
   b.style.gridTemplateColumns=`repeat(${N},1fr)`;
-  const W=Math.min(document.querySelector('.wrap').clientWidth-28,530);
+  let W=Math.min(document.querySelector('.wrap').clientWidth-28,530);
+  if(LAND.matches){W=Math.max(180,Math.min(window.innerHeight-46,(window.innerWidth-190-60-90-70)/2))}
+  b.style.width=(W+8)+'px';
   b.style.setProperty('--cs',(W/N)+'px');
 }
 function drawPlan(){
@@ -849,6 +886,7 @@ let updInfo=null;
 async function checkUpd(){try{if(window.__checkUpdate){updInfo=await window.__checkUpdate(APP_VERSION);if(updInfo&&!cur)menu()}}catch(e){}}
 initOnline();checkUpd();
 window.addEventListener('resize',()=>{if(cur){drawPlan();drawNotes()}});
+if(LAND.addEventListener)LAND.addEventListener('change',()=>{if(cur)render()});
 menu();
 </script>
 </body>
