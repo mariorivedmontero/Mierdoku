@@ -386,12 +386,20 @@ function drawPlan(){
     else{d.style.top=(r*u+u*.2)+'%';d.style.height=(u*.6)+'%';d.style.width='6px';d.style[s==='w'?'left':'right']='-5px'}
     b.appendChild(d);
   }
-  // labels: bottom-most row, left-most cell of each room
+  // labels: en una casilla sin muebles (para no tapar nada); si no hay, la que menos tape
+  const cs=parseFloat(real.style.getPropertyValue('--cs'))||40;
   L.rooms.forEach((rm,i)=>{
-    let best=null;
-    for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(L.grid[r][c]===i){if(!best||r>best[0]||(r===best[0]&&c<best[1]))best=[r,c]}
+    const span=Math.max(1,Math.ceil((rm.name.length*6.2+12)/cs));
+    let best=null,bestScore=1e9;
+    for(let r=N-1;r>=0;r--)for(let c=0;c<N;c++){
+      if(L.grid[r][c]!==i)continue;
+      let sc=0;for(let k=0;k<span;k++){const cc=c+k;if(cc>=N){sc+=1;continue}if(L.grid[r][cc]!==i)sc+=0.5;if(L.objs[r][cc])sc+=10}
+      sc+=(N-1-r)*0.01+c*0.001;
+      if(sc<bestScore){bestScore=sc;best=[r,c]}
+    }
     const d=document.createElement('div');d.className='lbl';d.textContent=rm.name;const u=100/N;
     d.style.left=`calc(${best[1]*u}% + 2px)`;d.style.top=`calc(${(best[0]+1)*u}% - 15px)`;
+    if(bestScore>=10)d.style.opacity='.75';
     b.appendChild(d);
   });
   real.replaceChildren(...b.childNodes);
